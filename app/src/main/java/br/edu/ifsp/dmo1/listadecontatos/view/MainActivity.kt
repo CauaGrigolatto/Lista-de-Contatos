@@ -24,13 +24,13 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
     private val listDataSource = ArrayList<Contact>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.v(TAG, "Executando o onCreate()")
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        Log.v(TAG, "Executando o onCreate()")
+        configListView(savedInstanceState)
         configClickListener()
-        configListView()
     }
 
     override fun onStart() {
@@ -83,8 +83,14 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
         }
     }
 
-    private fun configListView() {
-        listDataSource.addAll(ContactDAO.findAll())
+    private fun configListView(savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) {
+            Log.v(TAG, "Carregando estado dos dados")
+            listDataSource.addAll(
+                savedInstanceState.getSerializable("contacts") as ArrayList<Contact>
+            )
+        }
+
         adapter = ListContactAdapter(this, listDataSource)
         binding.listViewContacts.adapter = adapter
         binding.listViewContacts.onItemClickListener = this
@@ -128,5 +134,9 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
         builderDialog.create().show()
     }
 
-    
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        Log.v(TAG, "Salvando estado")
+        outState.putSerializable("contacts", listDataSource)
+    }
 }
