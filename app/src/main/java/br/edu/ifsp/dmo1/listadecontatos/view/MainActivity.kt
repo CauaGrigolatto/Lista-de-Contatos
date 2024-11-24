@@ -92,7 +92,8 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
 
     private fun updateListDataSource() {
         listDataSource.clear()
-        listDataSource.addAll(ContactDAO.findAll())
+        listDataSource.addAll(ContactDAO.findAll().sortedBy { it.name })
+        Log.v(TAG, "Lista ordenada -> $listDataSource")
         adapter.notifyDataSetChanged()
     }
 
@@ -126,4 +127,6 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
 
         builderDialog.create().show()
     }
+
+    
 }
